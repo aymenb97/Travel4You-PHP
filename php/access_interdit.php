@@ -1,3 +1,2 @@
 <?php
-echo "<h3>Vous n'avez pas le droit d'acceder a cette page!</h3>";
-?>
+echo "<h3>Erreur 403</h3>";

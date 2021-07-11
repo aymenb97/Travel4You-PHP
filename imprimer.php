@@ -1,38 +1,36 @@
 <?php
 include "php/config.php";
-
-
-if(!isset($_SESSION['cin_id'])){
-   header('Location: php/access_interdit.php');
+if (!isset($_SESSION['id'])) {
+    header('Location: php/access_interdit.php');
 }
-$cin =mysqli_real_escape_string($db,$_SESSION['cin_id']);
-$dateDep=mysqli_real_escape_string($db, $_GET['datedepart']);
-echo $cin.' '.$dateDep.'<br>    ';
-$sql = "SELECT * from reserver  WHERE cin = '$cin' && dateDep='$dateDep'";
-$result = mysqli_query($db,$sql);
-$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-$num=$row['NumC'];
+$id = mysqli_real_escape_string($db, $_SESSION['id']);
+$dateDep = mysqli_real_escape_string($db, $_GET['datedepart']);
+
+$sql = "SELECT * from reservation  WHERE client_id = '$id' && date_dep='$dateDep'";
+$result = mysqli_query($db, $sql);
+$row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+$num = $row['circuit_id'];
 $nomC;
-switch($num){
+switch ($num) {
     case '1':
-        $nomC="Mer";
+        $nomC = "Mer";
         break;
     case '2':
-        $nomC="Montagne";
+        $nomC = "Montagne";
         break;
     case '3':
-        $nomC="Sahara";
+        $nomC = "Sahara";
         break;
 }
-$dateDep=$row['dateDep'];
-$heureDep=$row['heureDep'];
-$nbrePerso=$row['nbrePerso'];
-$sql2= "SELECT nom,prenom,age from personne WHERE cin = '$cin' && dateDep='$dateDep'";
-$result2 = mysqli_query($db,$sql2);
-$i=1;
+$dateDep = $row['date_dep'];
+$heureDep = $row['heure_dep'];
+
+$sql2 = "SELECT nom,prenom,age from personne WHERE client_id = '$$id' && date_dep='$dateDep'";
+$result2 = mysqli_query($db, $sql2);
+$i = 1;
 
 
-if(isset($_POST['but_logout'])){
+if (isset($_POST['but_logout'])) {
     session_destroy();
 }
 ?>
@@ -42,11 +40,11 @@ if(isset($_POST['but_logout'])){
 
 <head>
     <meta charset="utf-8">
+    <script src="js/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/imprimer.css">
     <link rel="stylesheet" type="text/css" href="css/reserver.css">
-    <script src="js/jquery.min.js"></script>
     <script src="js/form.js"></script>
     <script src="js/reserver.js"></script>
     <title>Imprimer</title>
@@ -80,26 +78,23 @@ if(isset($_POST['but_logout'])){
             </div>
             <div class="row">
                 <div class="col-md-12">Nbre Personne:<span>
-                        <?php echo $nbrePerso ?>
+                        <?php echo mysqli_num_rows($result2) ?>
                     </span>
                 </div>
             </div>
             <hr>
             <div>
-                <?php while($row2 = mysqli_fetch_array($result2,MYSQLI_ASSOC)){
-            echo '<h5>Personne '.$i++.':</h5><br>';
-            echo '<div class="col-sm-6"> Nom: '.$row2['nom'].'<br> Prenom: '.$row2['prenom'].'<br> Age: '.$row2['age'].'</div>';
-            echo '<hr>';
-            echo '<br>';
-            } ?>
+                <?php while ($row2 = mysqli_fetch_array($result2, MYSQLI_ASSOC)) {
+                    echo '<h5>Personne ' . $i++ . ':</h5><br>';
+                    echo '<div class="col-sm-6"> Nom: ' . $row2['nom'] . '<br> Prenom: ' . $row2['prenom'] . '<br> Age: ' . $row2['age'] . '</div>';
+                    echo '<hr>';
+                    echo '<br>';
+                } ?>
             </div>
-
-
             <script>
                 function myFunction() {
                     window.print();
                 }
-
             </script>
 
         </div>

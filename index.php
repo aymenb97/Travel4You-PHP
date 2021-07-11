@@ -1,7 +1,8 @@
-<?php 
+<?php
 include "php/config.php";
 
-
+$sql = "SELECT * from circuit";
+$result = mysqli_query($db, $sql);
 ?>
 <!DOCTYPE html>
 
@@ -37,21 +38,21 @@ include "php/config.php";
                 <a class="col-md-1 text-white" href="#contact">A Propos</a>
             </nav>
         </header>
-     
+
         <div class="mid-text text-white fixed">
             <h1>Partez en voyage de vos rêves!</h1>
             <p class="para-mid">Parfois, le problème n’est pas qu’il n’ya pas de temps pour voyager, mais qu’il n’ya pas de temps pour le planifier. Mais vous avez de la chance, vous nous avez. Gagnez du temps et utilisez notre service!</p>
         </div>
         <div class="row btns">
-            <?php 
-            if(!isset($_SESSION['cin_id'])){
-           echo   '<button type="button" id="inscrire-btn" class="btn-t btn-sm col-sm-2">S inscrire</button>';
-           echo '<button type="button" id="identifier-btn" class="btn btn-primary btn-sm col-sm-2 btn-space">S identifier</button>';
-}else{
-                echo   '<a href="reserver.php"  class="btn-t btn-sm col-sm-2">Reserver Circuit</a>';
-           echo '<a href="reservations.php" class="btn btn-primary btn-sm col-sm-2 btn-space">Consulter Mes Reservations</a>';
+            <?php
+            if (!isset($_SESSION['id'])) {
+                echo   '<button type="button" id="inscrire-btn" class="btn-t btn-sm col-sm-2">S\'inscrire</button>';
+                echo '<button type="button" id="identifier-btn" class="btn btn-primary btn-sm col-sm-2 btn-space">S\'identifier</button>';
+            } else {
+                echo   '<a href="reserver_circuit.php"  class="btn-t btn-sm col-sm-2">Reserver Circuit</a>';
+                echo '<a href="reservations.php" class="btn btn-primary btn-sm col-sm-2 btn-space">Consulter Mes Reservations</a>';
             }
-     
+
             ?>
         </div>
         <section class="align-center mid-group">
@@ -77,35 +78,23 @@ include "php/config.php";
             <h2>Nos Circuits</h2>
             <div class="mid-group-2">
                 <div class="row">
-                    <div class="col-sm">
-                        <h5>Mer</h5>
-                        <img src="images/circuits/mer-crop.jpg" class="img-thumbnail">
+                    <?php
+                    while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+                        echo " <div class=\"p-2 col-md-4\">
+                        <img src=\"" . $row["url_image"] . "\" class=\"img-thumbnail \" width=\"300px\" >
 
-                        <ul class="left-align para-mid">
-                            <li>excursion en bateau en méditerranée</li>
-                            <li>Duree: 5 Heures</li>
-                            <li>Moyen de Transport: Bateau</li>
+                        <ul class=\"left-align para-mid pt-2\">
+                            <li>" . $row["theme_circuit"] . "</li>
+                            <li>" . $row["description_circuit"] . "</li>
+                            <li>Durée: " . $row["duree_circuit"] . "</li>
                         </ul>
 
                     </div>
-                    <div class="col-sm">
-                        <h5>Montagne</h5>
-                        <img src="images/circuits/montagne.jpg" class="img-thumbnail">
-                        <ul class="left-align para-mid">
-                            <li>excursion dans les montagnes de nord-ouest</li>
-                            <li>Duree: 4 Heures</li>
-                            <li>Moyen de Transport: AutoBus</li>
-                        </ul>
-                    </div>
-                    <div class="col-sm">
-                        <h5>Sahara</h5>
-                        <img src="images/circuits/sahara-crop.jpg" class="img-thumbnail">
-                        <ul class="left-align para-mid">
-                            <li>excursion dans le Sahara de Sud</li>
-                            <li>Duree: 3 Heures</li>
-                            <li>Moyen de Transport: Buggy/Jeep</li>
-                        </ul>
-                    </div>
+                    ";
+                    }
+
+                    ?>
+
                 </div>
             </div>
         </section>
@@ -120,14 +109,14 @@ include "php/config.php";
                 <div>
 
                     <div class="form-group" id="formreset">
-                        <label>CIN:</label>
-                        <input type="text" name="cin" id="cin_ins" placeholder="Votre CIN" class="form-control form-control-sm col-md-3" pattern="[0-9]{8}" required />
+                        <label>Email:</label>
+                        <input type="text" name="email" id="email" placeholder="Votre Email" class="form-control form-control-sm col-md-3" pattern="[0-9]{8}" required />
                         <p class="text-danger" id="message_ins"></p>
                     </div>
-                     <div class="form-group" id="formreset">
+                    <div class="form-group" id="formreset">
                         <label>Mot De Passe:</label>
-                        <input type="password" name="pwd" id="pwd_ins" placeholder="Votre Mot De Passe" class="form-control form-control-sm col-md-3" required />
-                         <p>Mot De Passe Doit Etre Lorem Ipsum</p>
+                        <input type="password" name="password" id="password" placeholder="Votre Mot De Passe" class="form-control form-control-sm col-md-3" required />
+                        <p>Mot De Passe Doit Etre Lorem Ipsum</p>
                         <p class="text-danger" id="message_ins"></p>
                     </div>
                     <div class="form-row">
@@ -165,8 +154,8 @@ include "php/config.php";
                     <br>
                     <label>Sexe:</label>
                     <div class="custom-control custom-radio">
-                        <input type="radio" class="form-check-input sexe" name="sexe" value="Homme" checked>Homme<br>
-                        <input type="radio" name="sexe" class="form-check-input sexe" value="Femme">Femme<br>
+                        <input type="radio" class="form-check-input sexe" name="sexe" value="H" checked>Homme<br>
+                        <input type="radio" name="sexe" class="form-check-input sexe" value="F">Femme<br>
                     </div><br>
                     <div class="row">
                         <input type="button" id="but_ins" class="btn btn-primary col-md-2" value="S'inscrire" />
@@ -196,19 +185,19 @@ include "php/config.php";
 
             <div class="row flex-align-center">
                 <div>
-                    <div class="row">
-                        <span class="col">CIN:</span>
+                    <div class="row m-2">
+                        <span class="col">Email:</span>
                     </div>
-                    <div class="row">
-                        <input type="text" id="cin_id" name="cin_id" placeholder="Votre CIN" class="form-control form-control-sm col" pattern="[0-9]{8}" required />
+                    <div class="row m-2">
+                        <input type="text" id="emailLogin" name="email" placeholder="Adresse Email" class=" form-control form-control-sm col" pattern="email" required />
                     </div>
-                    <div class="row">
+                    <div class="row m-2">
                         <span class="col">Mot De Passe</span>
                     </div>
-                    <div class="row">
-                        <input type="password" id="pwd_id" name="pwd_id" placeholder="Votre Mot De Passe" class="form-control form-control-sm col" pattern="[0-9]{8}" required />
+                    <div class="row m-2">
+                        <input type="password" id="passwordLogin" name="password" placeholder="Votre Mot De Passe" class="form-control form-control-sm col" required />
                     </div>
-                    <div class="row" style="margin-top: 1em;">
+                    <div class="row m-2" style="margin-top: 1em;">
                         <input type="submit" id="but_login" name="but_login" class="btn btn-primary col" value="S'identifier" />
                     </div>
                     <br>
@@ -226,7 +215,7 @@ include "php/config.php";
     <footer class="footer-black text-gray">
         <div class="footer-black">
         </div>
-        <div id="contact" class="container">
+        <div id="contact" class="container p-2">
             <h3 section class="align-center mid-group-2 margin-top">Contacter Nous:</h3>
             <div class="row">
                 <div class="col-sm flex-align-center">
@@ -237,7 +226,7 @@ include "php/config.php";
                     </ul>
                 </div>
                 <div class="col-sm flex-align-center">
-                   
+
                 </div>
             </div>
         </div>
